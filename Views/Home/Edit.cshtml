@@ -1,0 +1,245 @@
+﻿@model IEnumerable<WebApplication2.Models.DocumentConstructorLeftData>
+ 
+@{
+    ViewBag.Title = "Режим редактирования";
+    <link rel="stylesheet" href="~/Content/index.css" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    var size = "size";
+    var textArea = "textArea";
+    var title = "title";
+}
+
+<main class="main" >
+    <div class="header-content ">
+        <p style="color: #2a2254; ">Бизнес план </p>
+    </div>
+       <div>
+            <i style="width: 100%; text-align: end;margin-top:20px" class="fas fa-file-word" ></i>      
+    </div>
+ 
+    <div><p></p></div>
+    <div class="main-blocks" style="display:flex">
+        <div class="left-content ">
+            <div style="display:flex" id="testDiv">
+                <div style=" padding-right: 20px; display:flex">
+                    <input type="text" class="box" id="leftContentInput">
+                    <i class="fas fa-save box " id="saveInput" style="margin:10px"></i>
+                </div>
+            </div>
+            <dialog id="headerTitleDialog">
+                <div>Введите название заголовка:</div>
+                <input id="inputHeaderTitle" type="text" />
+                <button id="saveHeaderTitle">Сохранить</button>
+            </dialog>
+            <dialog id="bottomTitleDialog">
+                <div>Введите название подвала:</div>
+                <input id="inputBottomTitle" type="text" />
+                <button id="saveBottomTitle">Сохранить</button>
+            </dialog>
+            <i class="fas fa-plus-circle add" style="color: #8E8E93;"></i>
+            @foreach (var item in Model)
+            {
+
+                <div id="@("divForModelItems" + @item.DocumentConstructorLeftDataId)" onmousemove="handlerInListButtons(@item.DocumentConstructorLeftDataId)" onmouseout="handlerOutListButtons(@item.DocumentConstructorLeftDataId)">
+
+                    <div style="margin-top:10px">
+                        <a href="@("#"+title+@item.DocumentConstructorLeftDataId)" class="@(size + @item.SizeTitle) @item.DocumentConstructorLeftDataId">   @Html.DisplayFor(modelItem => item.Title)</a>
+                    </div>
+
+                    <div class="@item.DocumentConstructorLeftDataId hidden">
+                        <input type="text" value="@item.Title" id="@item.DocumentConstructorLeftDataId" />
+                        <i class="fas fa-save saveEdit" style="margin:10px"></i>
+                    </div>
+
+                    <div class="list-buttons hidden" id="@("list-buttons" + @item.DocumentConstructorLeftDataId)">
+                        <i class="fas fa-edit editLeft" onclick="handleEdit(@item.DocumentConstructorLeftDataId)" style="color: #8E8E93;"></i>
+                        <i class="fas fa-arrow-up NppUp" style="color: #8E8E93;" data-id="@item.DocumentConstructorLeftDataId"></i>
+                        <i class="fas fa-arrow-down NppDown" style="color: #8E8E93" ; data-id=" @item.DocumentConstructorLeftDataId"></i>
+                        <i class="fas fa-arrow-left SizeTitleUp" style="color: #8E8E93;" data-size="@item.SizeTitle" data-id="@item.DocumentConstructorLeftDataId"></i>
+                        <i class="fas fa-arrow-right SizeTitleDown" style="color: #8E8E93;" data-size="@item.SizeTitle" data-id="@item.DocumentConstructorLeftDataId"></i>
+                        <i class="fas fa-trash delete" style="color: #8E8E93;" onclick="POSTDeleteLeftData(@item.DocumentConstructorLeftDataId)"> </i>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="center-content">
+            <div class="center-content-header">
+                <div>
+                        @if (@Model.Select(e => e.DocumentConstructor.Header) != null)
+                        {
+                            <div>
+                                <span class="headerTitleSpan">
+                                    @Model.Select(e => e.DocumentConstructor?.Header).FirstOrDefault()
+                                </span>
+                            </div>
+                        }
+                </div>
+                <div style="margin-left:auto; font-weight:bold"><span style="margin-right:10px">1 из 10</span> </div>
+            </div>
+
+            @foreach (var item in Model)
+            {
+                <div style=" padding: 4%;">
+                    <p style="font-size:18px;font-weight:bold" id="@(title + @item.DocumentConstructorLeftDataId)"> @Html.DisplayFor(modelItem => item.Title)</p>
+                    <div>
+                        <div style="font-size:12px;">
+                            @foreach (var element in item.listBlocks)
+                            {
+                                <div style="display: flex;  ">
+
+                                    <div id="@("editContentDiv" + @element.DocumentConstructorCenterDataId)" data-content="@element.Content">
+                                        @Html.DisplayFor(el => element.Content)
+                                    </div>
+                                    <textarea id="@("textAreaEdit"+ @element.DocumentConstructorCenterDataId)" oncontextmenu="calcPosition(@element.DocumentConstructorCenterDataId)" class="hidden"></textarea>
+                                    @if (element.ImageData != null)
+                                    {
+                                        @Html.Raw("<img id=images src=\"data:image/png;base64," + Convert.ToBase64String(@element.ImageData) + "\" />");
+                                    }
+
+                                    <div style="display:flex;">
+                                        <div>
+                                            <i class="fas fa-edit" onclick="editContent(@element.DocumentConstructorCenterDataId)" style="color: #8E8E93; margin-left:10px;"></i>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-trash delete" style="color: #8E8E93; margin-left: 10px;" onclick="deleteContent(@element.DocumentConstructorCenterDataId)"> </i>
+                                        </div>
+                                        <div>
+                                            <i class="fas fa-save hidden " id="@("saveContent"+ @element.DocumentConstructorCenterDataId )" style="margin:10px" onclick="saveEditContent(@element.DocumentConstructorCenterDataId, @item.DocumentConstructorLeftDataId)"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <div class="@("drop-area")" style="border: 2px dashed #ccc; padding: 20px; text-align: center;" data-parentid="@item.DocumentConstructorLeftDataId" >
+                                <input type="file" class="fileElem" style="display:none;" data-parentid="@item.DocumentConstructorLeftDataId" />
+                                <label for="fileElem" style="cursor:pointer;">Выбрать изображение</label>
+                            </div>
+                            <div id="@("preview" + @item.DocumentConstructorLeftDataId)" style="margin-top: 20px;"></div>
+                        </div>
+                        <div style="display:flex">
+                            <textarea id="@(textArea+@item.DocumentConstructorLeftDataId)" class="hidden"></textarea>
+                            <i class="fas fa-plus-circle addContent" onclick="showTextArea(@item.DocumentConstructorLeftDataId)" id="@("addContent"+ item.DocumentConstructorLeftDataId)" style="color: #d3d3d3; margin-left: 10px;"></i>
+                            <div>
+                                <i class="fas fa-save hidden " id="@("saveContent"+ @item.DocumentConstructorLeftDataId)" style="margin:10px" onclick="addContent(@item.DocumentConstructorLeftDataId)"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="context-menu">
+                        <div>Отправить данные координат</div>
+                        <input type="text" id="contextMenuInput" />
+                        <button class="contextMenuButton">Отправить</button>
+                    </div>
+                </div>
+            }
+                @if (@Model.Select(e => e.DocumentConstructor.Bottom) != null)
+                {
+                    <div class="center-content-header">
+                        <span class="bottomTitleSpan">
+                            @Model.Select(e => e.DocumentConstructor?.Bottom).FirstOrDefault()  
+                        </span>
+                    </div>
+                }
+        </div>
+
+        <div class="right-content">
+            <div class="right-content-header">
+                <img src="~/Images/closeIcon.png" width="42" style="margin-top: 20px; margin-right: 10px;" />
+            </div>
+            <div>
+                <div class=" right-main-wrapper">
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/text.png" width="35" height="35" />
+                        </div>
+
+                        <div>
+                            <span>Текст</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/picture.png" width="45" height="35" />
+                        </div>
+
+                        <div>
+                            <span>Картинка</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/report.png" width="30" height="40" />
+                        </div>
+
+                        <div>
+                            <span>Отчет</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/plot.png" width="40" height="35" />
+                        </div>
+
+                        <div>
+                            <span>График</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/bpmn.png" width="46" height="40" />
+                        </div>
+
+                        <div>
+                            <span>Схема</span>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="rectangle"></div>
+                <div class=" right-main-wrapper">
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/pageBrake.png" width="35" height="35" />
+                        </div>
+
+                        <div>
+                            <span>Страница</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper" style="background-color:white;">
+
+                    </div>
+                    <div class="right-blocks-wrapper" onclick="handleDialog()">
+                        <div class="top-title">
+                            <img src="~/Images/top.png" width="35" height="47" />
+                        </div>
+
+                        <div >
+                            <span>Заголовок</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper" onclick="handleDialogBottom()">
+                        <div>
+                            <img src="~/Images/botom.png" width="35" height="47" />
+                        </div>
+
+                        <div>
+                            <span>Подвал</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+@{
+    <script type="text/javascript" src="~/Scripts/editScript.js"></script>
+}

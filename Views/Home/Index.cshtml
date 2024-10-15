@@ -1,0 +1,199 @@
+﻿@model IEnumerable<WebApplication2.Models.DocumentConstructorLeftData>
+@{
+
+    ViewBag.Title = "Режим просмотра";
+    <link rel="stylesheet" href="~/Content/index.css" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    var size = "size";
+    var textArea = "textArea";
+    var title = "title";
+}
+
+<main class="main">
+    <div class="header-content">
+        <p style="color: #2a2254; ">Бизнес план</p>
+    </div>
+    <div>
+        <i style="width: 100%; text-align: end;margin-top:20px" class="fas fa-file-word"></i>
+    </div>
+
+    <div><p></p></div>
+    <div class="main-blocks" style="display:flex">
+        <div class="left-content">
+            <div style="display:flex">
+                <div style=" padding-right: 20px;">
+
+                    @foreach (var item in Model)
+                    {
+                        <div style="display:flex" id="divForModelItems">
+
+                            <div style="margin-bottom:15px">
+                                <a href="@("#"+title+@item.DocumentConstructorLeftDataId)" class="@(size + @item.SizeTitle)" id="@item.DocumentConstructorLeftDataId"> @Html.DisplayFor(modelItem => item.Title)</a>
+                            </div>
+
+                            <div class="@item.DocumentConstructorLeftDataId hidden">
+                                <input type="text" value="@item.Title" id="@item.DocumentConstructorLeftDataId" />
+
+                            </div>
+
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="center-content">
+            <div class="center-content-header">
+                <div>Бизнес план "Кулинария на ул. Островского" </div>
+                <div style="margin-left:auto; font-weight:bold">
+                    <span style="margin-right:10px">1 из 10</span>
+                </div>
+
+            </div>
+            @foreach (var item in Model)
+            {
+                <div style=" padding: 4%;">
+                    <p style="font-size:18px;font-weight:bold" id="@(title + @item.DocumentConstructorLeftDataId)"> @Html.DisplayFor(modelItem => item.Title)</p>
+                    <div>
+                        <div style="font-size:12px;">
+                            @foreach (var element in item.listBlocks)
+                            {
+                                <div>
+                                    @Html.DisplayFor(el => element.Content)
+
+                                </div>
+                                if (element.ImageData != null)
+                                {
+                                    @Html.Raw("<img id=images src=\"data:image/png;base64," + Convert.ToBase64String(@element.ImageData) + "\" />");
+                                }
+
+                            }
+                        </div>
+                        <div style="display:flex">
+                            <textarea id="@(textArea+@item.DocumentConstructorLeftDataId)" class="hidden"></textarea>
+
+                        </div>
+
+                    </div>
+                    <!--<div style="display:flex;">
+                    <div style="border: solid 0.1px #c8c8c8; padding: 1%; box-shadow: 0px 4px 5px #c8c8c8 inset; font-size: 12px; flex:1">-->
+                    @*<p>Сумма первоначальных инвестиций - 1 710 000 рублей;</p>
+                        <p>Ежемесячные затраты - <span style="color:blue">730 991</span> рублей;</p>
+                        <p>Ежемесячная прибыль - 133 783 рублей;</p>
+                        <p>Срок окупаемости - 16 месяцев;</p>
+                        <p>Точка безубыточности - 3 месяца;</p>
+                        <p>Рентабельность продаж - 21%.</p>*@
+                    <!--</div>
+                    <div style="margin-left: auto;  ">
+                        <i class="fas fa-edit " style="color: #d3d3d3; margin-left:10px;"></i>
+                    </div>-->
+                    @*</div>*@
+
+                </div>
+            }
+
+        </div>
+        <div class="right-content">
+            <div class="right-content-header">
+                <img src="~/Images/closeIcon.png" width="42" style="margin-top: 20px; margin-right: 10px;" />
+            </div>
+            <div>
+                <div class=" right-main-wrapper">
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/text.png" width="35" height="35" />
+                        </div>
+
+                        <div>
+                            <span>Текст</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/picture.png" width="45" height="35" />
+                        </div>
+
+                        <div>
+                            <span>Картинка</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/report.png" width="30" height="40" />
+                        </div>
+
+                        <div>
+                            <span>Отчет</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/plot.png" width="40" height="35" />
+                        </div>
+
+                        <div>
+                            <span>График</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/bpmn.png" width="46" height="40" />
+                        </div>
+
+                        <div>
+                            <span>Схема</span>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="rectangle"></div>
+                <div class=" right-main-wrapper">
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/pageBrake.png" width="35" height="35" />
+                        </div>
+
+                        <div>
+                            <span>Страница</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper" style="background-color:white;">
+
+                    </div>
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/top.png" width="35" height="47" />
+                        </div>
+
+                        <div>
+                            <span>Заголовок</span>
+                        </div>
+
+                    </div>
+                    <div class="right-blocks-wrapper">
+                        <div>
+                            <img src="~/Images/botom.png" width="35" height="47" />
+                        </div>
+
+                        <div>
+                            <span>Подвал</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+@{
+    <script type="text/javascript" src="~/Scripts/editScript.js"></script>
+}
